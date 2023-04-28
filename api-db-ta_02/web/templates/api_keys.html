@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Список ключей</title>
+</head>
+<body>
+    <h1>Список ключей:</h1>
+    <ul>
+        {% for api_key in api_keys %}
+            <li>{{ api_key.name }} (binance_key: {{ api_key.binance_key }}, binance_secret: {{ api_key.binance_secret }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
