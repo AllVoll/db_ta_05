@@ -1,0 +1,23 @@
+{% extends "layout1.html" %}
+
+{% block content %}
+
+<h1>API MANAGER</h1>
+
+<form method="post" action="/api_manager">
+  <div class="form-group">
+    <label for="name">API Key Name:</label>
+    <input type="text" class="form-control" id="name" name="name" placeholder="Enter API key name">
+  </div>         
+  <div>
+    <label for="binance_key">API Key:</label>
+    <input type="text" id="binance_key" name="binance_key">
+  </div>
+  <div>
+    <label for="binance_secret">Secret Key:</label>
+    <input type="text" id="binance_secret" name="binance_secret">
+  </div>
+  <button type="submit">Save</button>
+</form>
+
+{% endblock %}

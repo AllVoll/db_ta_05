@@ -1,0 +1,55 @@
+#docker-compose.yml
+
+version: "3.7"
+
+services:
+  timescale:
+    image: timescale/timescaledb:latest-pg12
+    container_name: timescale_av
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=av
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=av
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/data:/var/lib/postgresql/data
+    networks:
+      - api-db_default
+  db_client:
+    image: postgres:12
+    container_name: db_client_av
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=av
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=av
+      - DB_HOST=timescale
+    depends_on:
+      - timescale
+    networks:
+      - api-db_default
+
+  web:
+    build: .
+    #command: bash -c "/usr/src/app/entrypoint.sh && uvicorn web.main:app --host 0.0.0.0 --port 80 --reload"
+    environment:
+      DB_HOST: timescale
+    volumes:
+      - .:/app
+      #new
+      - ./alembic/alembic.ini:/app/alembic/alembic.ini
+    ports:
+      - "5002:80"
+    depends_on:
+      - timescale
+    networks:
+      - api-db_default
+    #entrypoint: /usr/src/app/entrypoint.sh
+    command: uvicorn web.main:app --host 0.0.0.0 --port 80 --reload
+
+networks:
+  api-db_default:
+    driver: bridge
